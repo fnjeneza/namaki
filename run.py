@@ -1,21 +1,42 @@
 import yaml
+from yowsup.registration import WACodeRequest
 
-params = {}
+phone = None
+cc = None
+mcc = None
+mnc = None
+code = None
 
 with open("config.yml") as config:
     params = yaml.load(config)
+    phone = params["phone"]
+    cc = params["cc"]
+    mcc = params["mcc"]
+    mnc = params["mnc"]
+    code = params["code"]
 
-if params["phone"] is None:
+
+if phone is None:
     print("phone is missing")
 
-if params["cc"] is None:
+if cc is None:
     print("cc is missing")
 
-if params["mcc"] is None:
+if mcc is None:
     print("mcc is missing")
 
-if params["mnc"] is None:
+if mnc is None:
     print("mnc is missing")
 
-if params["code"] is None:
-    print("code is missing")
+if code is None:
+    print("code missing")
+
+    #request code
+    request_code = WACodeRequest(cc, phone, mcc, mnc, mcc, mnc)
+    result = request_code.send()
+
+    print(result)
+
+else:
+    #register
+    pass
