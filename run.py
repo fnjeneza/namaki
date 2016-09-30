@@ -74,7 +74,7 @@ class NamakiStack(object):
 
 
         self.stack.setCredentials(credentials)
-        self.stack.setProp(PROP_IDENTITY_AUTOTRUST)
+        self.stack.setProp(PROP_IDENTITY_AUTOTRUST, True)
 
     def start(self):
         print("starting...")
