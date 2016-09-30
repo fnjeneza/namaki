@@ -4,6 +4,7 @@ from yowsup.stacks import YowStackBuilder
 from yowsup.layers.axolotl.props import PROP_IDENTITY_AUTOTRUST
 from yowsup.layers import YowLayerEvent
 from yowsup.layers.auth import AuthError
+from yowsup.layers.network import YowNetworkLayer
 from layer import NamakiLayer
 
 CONFIG_FILE = "config"
@@ -78,7 +79,7 @@ class NamakiStack(object):
 
     def start(self):
         print("starting...")
-        self.stack.broadcastEvent(YowLayerEvent(NamakiLayer.EVENT_START))
+        self.stack.broadcastEvent(YowLayerEvent(YowNetworkLayer.EVENT_STATE_CONNECT))
 
         try:
             self.stack.loop()
