@@ -1,38 +1,7 @@
 import yaml
 from yowsup.registration import WACodeRequest
 
-def foo():
-    phone = None
-    cc = None
-    mcc = None
-    mnc = None
-    code = None
-
-
-
-    with open("config.yml") as config:
-        params = yaml.load(config)
-        phone = params["phone"]
-        cc = params["cc"]
-        mcc = params["mcc"]
-        mnc = params["mnc"]
-        code = params["code"]
-
-
-    if phone is None:
-        print("phone is missing")
-
-    if cc is None:
-        print("cc is missing")
-
-    if mcc is None:
-        print("mcc is missing")
-
-    if mnc is None:
-        print("mnc is missing")
-
-    if code is None:
-        print("code missing")
+CONFIG_FILE = "config"
 
 def request_code(cc, phone, mcc, mnc):
     """
@@ -47,7 +16,15 @@ def request_code(cc, phone, mcc, mnc):
         return (False, result["reason"])
 
     else:
+        config = { "cc": cc, "phone": phone, "mcc": mcc, "mnc": mnc}
+
+        #config file name is config
+        with open(CONFIG_FILE, "w") as config_file:
+            yaml.dump(config, config_file)
+
         return (True, None)
 
 def register(cc, phone, password):
-    pass
+    with open(CONFIG_FILE) as config_file:
+        config = yaml.load(config_file)
+        config["phone"], config["cc"]
