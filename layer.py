@@ -1,10 +1,10 @@
-from yowsup.layers import YowLayer
+from yowsup.layers.interface import YowInterfaceLayer, ProtocolEntityCallback
+from yowsup.layers.protocol_messages.protocolentities import TextMessageProtocolEntity
 
-class NamakiLayer(YowLayer):
-    def receive(self, protocolEntity):
-        if protocolEntity.getTag() == "message":
-            self.onMessage(protocolEntity)
+class NamakiLayer(YowInterfaceLayer):
 
+    @ProtocolEntityCallback("message")
     def onMessage(self, messageProtocolEntity):
-        message = messageProtocolEntity/getBody()
-        print(message)
+        #message = messageProtocolEntity.getBody()
+        print("incoming message")
+        #print(message)

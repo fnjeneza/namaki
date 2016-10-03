@@ -50,10 +50,10 @@ def register(code):
     else:
         with open(CONFIG_FILE, "w") as config_file:
             config["pw"] = result["pw"]
-            config["loging"] = result["login"]
+            config["login"] = result["login"]
             yaml.dump(config, config_file)
         return (True, None)
-
+"""
 class NamakiStack(object):
     def __init__(self):
         stackBuilder = YowStackBuilder()
@@ -62,7 +62,6 @@ class NamakiStack(object):
                 .pushDefaultLayers(True)\
                 .push(NamakiLayer)\
                 .build()
-
         credentials = None
 
         with open(CONFIG_FILE) as config_file:
@@ -72,7 +71,6 @@ class NamakiStack(object):
             assert login is not None, "login must not be empty"
             assert pw is not None, "pw must no be empty"
             credentials = (login, pw)
-
 
         self.stack.setCredentials(credentials)
         self.stack.setProp(PROP_IDENTITY_AUTOTRUST, True)
@@ -85,3 +83,25 @@ class NamakiStack(object):
             self.stack.loop()
         except AuthError as e:
             print("AuthError reason %s" % e)
+"""
+
+if __name__ == "__main__":
+    credentials = None
+
+    with open(CONFIG_FILE) as config_file:
+        config = yaml.load(config_file)
+        login = config["login"]
+        pw = config["pw"]
+        assert login is not None, "login must not be empty"
+        assert pw is not None, "pw must no be empty"
+        credentials = (login, pw)
+
+    stackBuilder = YowStackBuilder()
+
+    stack = stackBuilder.pushDefaultLayers(True)\
+            .push(NamakiLayer)\
+            .build()
+
+    stack.setCredentials(credentials)
+    stack.broadcastEvent(YowLayerEvent(YowNetworkLayer.EVENT_STATE_CONNECT))
+    stack.loop()
