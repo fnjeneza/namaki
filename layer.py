@@ -11,5 +11,9 @@ class NamakiLayer(YowInterfaceLayer):
                 messageProtocolEntity.getParticipant())
 
         message = messageProtocolEntity.getBody()
+        # TODO
+        # do some action here
         print("... %s" % message)
+
+        #send ack
         self.toLower(receipt)
