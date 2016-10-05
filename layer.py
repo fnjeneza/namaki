@@ -7,24 +7,39 @@ suffix = "@s.whatsapp.net"
 
 class NamakiLayer(YowInterfaceLayer):
     def __init(self):
-        self.connected = False
-        self.suffix = "@s.whatsapp.net"
+        self._connected = False
+        self._suffix = "@s.whatsapp.net"
 
 
     def phone_to_jid(self, phone):
-        return phone + self.suffix
+        return phone + self._suffix
 
 
     def has_jid(self, phone):
         return phone.find(suffix) >= 0
 
+
     @ProtocolEntityCallback("success")
     def onSuccess(self, entity):
-        self.connected = True
-        print("ouha i'm connected")
+        """
+        called when a connection succeed
+        """
+        self._connected = True
+        print("connected")
+
+
+    def assert_connected(self):
+        """
+        check if connection is established
+        """
+        assert _connected, "Not connected"
+
 
     @ProtocolEntityCallback("message")
     def onMessage(self, messageProtocolEntity):
+        """
+        called when on incoming text message
+        """
         receipt = OutgoingReceiptProtocolEntity(messageProtocolEntity.getId(),
                 messageProtocolEntity.getFrom(),
                 "read",
