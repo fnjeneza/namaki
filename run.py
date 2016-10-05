@@ -6,6 +6,8 @@ from yowsup.layers import YowLayerEvent
 from yowsup.layers.auth import AuthError
 from yowsup.layers.network import YowNetworkLayer
 from layer import NamakiLayer
+from threading import Thread
+import time
 
 CONFIG_FILE = "config"
 
@@ -104,4 +106,11 @@ if __name__ == "__main__":
 
     stack.setCredentials(credentials)
     stack.broadcastEvent(YowLayerEvent(YowNetworkLayer.EVENT_STATE_CONNECT))
-    stack.loop()
+    t = Thread(target=stack.loop)
+    t.start()
+    layer = stack.getLayer(-1)
+    layer.send_message("33780889335", "test")
+    print("bye gonna sleep")
+    time.sleep(5)
+    layer.send_message("33780889335", "test")
+    print("hello")

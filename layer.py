@@ -55,10 +55,17 @@ class NamakiLayer(YowInterfaceLayer):
 
     @ProtocolEntityCallback("ack")
     def onAck(self, entity):
+        """
+        called when ack is sent by a friend
+        """
         print("message sent")
+
 
     @ProtocolEntityCallback("failure")
     def onFailure(self, entity):
+        """
+        when authentication failed
+        """
         print("Login failed, reason %s" % entity.getReason())
 
 
