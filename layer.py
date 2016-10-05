@@ -57,6 +57,10 @@ class NamakiLayer(YowInterfaceLayer):
     def onAck(self, entity):
         print("message sent")
 
+    @ProtocolEntityCallback("failure")
+    def onFailure(self, entity):
+        print("Login failed, reason %s" % entity.getReason())
+
 
     def send_message(self, phone, message):
         if not self.has_jid(phone):
