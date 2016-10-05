@@ -3,10 +3,9 @@ from yowsup.layers.protocol_receipts.protocolentities import OutgoingReceiptProt
 from yowsup.layers.protocol_messages.protocolentities import TextMessageProtocolEntity
 
 
-suffix = "@s.whatsapp.net"
-
 class NamakiLayer(YowInterfaceLayer):
-    def __init(self):
+    def __init__(self):
+        YowInterfaceLayer.__init__(self)
         self._connected = False
         self._suffix = "@s.whatsapp.net"
 
@@ -16,7 +15,7 @@ class NamakiLayer(YowInterfaceLayer):
 
 
     def has_jid(self, phone):
-        return phone.find(suffix) >= 0
+        return phone.find(self._suffix) >= 0
 
 
     @ProtocolEntityCallback("success")
@@ -25,14 +24,14 @@ class NamakiLayer(YowInterfaceLayer):
         called when a connection succeed
         """
         self._connected = True
-        print("connected")
+        print("ouha!! connected")
 
 
-    def assert_connected(self):
+    def is_connected(self):
         """
         check if connection is established
         """
-        assert _connected, "Not connected"
+        return self._connected
 
 
     @ProtocolEntityCallback("message")
@@ -52,6 +51,11 @@ class NamakiLayer(YowInterfaceLayer):
 
         #send ack
         self.toLower(receipt)
+
+
+    @ProtocolEntityCallback("ack")
+    def onAck(self, entity):
+        print("message sent")
 
 
     def send_message(self, phone, message):
