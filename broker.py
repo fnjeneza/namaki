@@ -4,14 +4,19 @@ class Broker:
     def __init__(self, bind_address="*", port="5557"):
         print("Broker initialisation...")
         context = zmq.Context()
-        self.sender = context.socket(zmq.PUSH)
-        self.sender.bind("tcp://" + bind_address + ":" + port)
+        self.receiver_socket = context.socket(zmq.REP)
+        self.receiver_socket.bind("tcp://" + bind_address + ":" + port)
+        self.handle_message()
 
-    def send(self, message):
-        print("sending message to client")
-        self.sender.send_string(message)
+
+    def handle_message(self):
+        print("handling message")
+        while True:
+            msg = self.receiver_socket.recv()
+            print(msg)
+
+            self.receiver_socket.send_string("")
 
 
 if __name__ == "__main__":
     br = Broker()
-    br.send("hello world")
