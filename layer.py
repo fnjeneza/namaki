@@ -5,6 +5,7 @@ from yowsup.layers.protocol_messages.protocolentities import TextMessageProtocol
 
 class NamakiLayer(YowInterfaceLayer):
     def __init__(self):
+        print("init layer")
         YowInterfaceLayer.__init__(self)
         self._connected = False
         self._suffix = "@s.whatsapp.net"
@@ -25,6 +26,8 @@ class NamakiLayer(YowInterfaceLayer):
         """
         self._connected = True
         print("ouha!! connected")
+        #TODO
+        #start broker here
 
 
     def is_connected(self):
