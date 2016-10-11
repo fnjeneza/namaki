@@ -16,7 +16,7 @@ message MediaMessage {
 message Message {
     string command = 1;
     enum Data {
-        TextMessage = 1;
-        MediaMessage = 2;
+        TextMessage = 0;
+        MediaMessage = 1;
     }
 }
