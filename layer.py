@@ -2,6 +2,7 @@ from yowsup.layers.interface import YowInterfaceLayer, ProtocolEntityCallback
 from yowsup.layers.protocol_receipts.protocolentities import OutgoingReceiptProtocolEntity
 from yowsup.layers.protocol_messages.protocolentities import TextMessageProtocolEntity
 from broker import Broker
+from message import TextMessage
 
 class NamakiLayer(YowInterfaceLayer):
     def __init__(self):
@@ -48,9 +49,12 @@ class NamakiLayer(YowInterfaceLayer):
                 "read",
                 messageProtocolEntity.getParticipant())
 
-        message = messageProtocolEntity.getBody()
-        print(messageProtocolEntity)
-        self.push(message)
+        if messageProtocolEntity.getType() == "text":
+            print(messageProtocolEntity)
+            message = TextMessage(id=messageProtocolEntity.getId(),
+                    src=messageProtocolEntity.getFrom(),
+                    body=messageProtocolEntity.getBody())
+            self.push(message)
 
         #send ack
         self.toLower(receipt)
@@ -61,7 +65,6 @@ class NamakiLayer(YowInterfaceLayer):
         """
         called when ack is sent by a friend
         """
-        print(entity)
         print("message sent")
 
 
@@ -92,4 +95,5 @@ class NamakiLayer(YowInterfaceLayer):
         push message to the broker
         """
         print("push message to the broker")
+        assert isinstance(message, TextMessage), "not instance of TextMessage"
         self._broker.send(message)
