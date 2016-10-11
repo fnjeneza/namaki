@@ -9,6 +9,9 @@ class NamakiLayer(YowInterfaceLayer):
         YowInterfaceLayer.__init__(self)
         self._connected = False
         self._suffix = "@s.whatsapp.net"
+        self._broker = Broker()
+        self._broker.set_message_handler(self.send_message)
+        assert self._broker.started(), "broker not running"
 
 
     def phone_to_jid(self, phone):
@@ -25,7 +28,6 @@ class NamakiLayer(YowInterfaceLayer):
         called when a connection succeed
         """
         self._connected = True
-        self._broker = Broker()
         print("ouha!! connected")
 
 
@@ -47,6 +49,7 @@ class NamakiLayer(YowInterfaceLayer):
                 messageProtocolEntity.getParticipant())
 
         message = messageProtocolEntity.getBody()
+        print(messageProtocolEntity)
         self.push(message)
 
         #send ack
@@ -58,6 +61,7 @@ class NamakiLayer(YowInterfaceLayer):
         """
         called when ack is sent by a friend
         """
+        print(entity)
         print("message sent")
 
 

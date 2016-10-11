@@ -10,10 +10,20 @@ class Broker:
 
         print("Broker initialisation...")
 
+        #NamakiLayer method to handler icoming message
+        self.message_handler = None
+
         self.context = zmq.Context()
         Thread(target=self._setup_receiver,
                 args=(bind_address, bind_port,)).start()
         self.sender = self._setup_sender(connect_address, connect_port)
+
+        # once at this line => broker well started
+        self._started = True
+
+
+    def started(self):
+        return self._started
 
 
     def _setup_receiver(self, address, port):
@@ -24,6 +34,8 @@ class Broker:
         receiver_socket.bind("tcp://" + address + ":" + port)
         while True:
             msg = receiver_socket.recv()
+            assert self.message_handler, "message handler not set"
+            self.message_handler("33780889335", msg.decode())
             print(msg)
 
 
@@ -42,7 +54,11 @@ class Broker:
         """
         self.sender.send_string(message)
 
+
+    def set_message_handler(self, fn):
+        self.message_handler = fn
+
 # just for test
 if __name__ == "__main__":
     br = Broker()
-    br.send("server")
+    #br.send("server")
