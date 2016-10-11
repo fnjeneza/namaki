@@ -3,14 +3,12 @@ from yowsup.layers.protocol_receipts.protocolentities import OutgoingReceiptProt
 from yowsup.layers.protocol_messages.protocolentities import TextMessageProtocolEntity
 from broker import Broker
 
-
 class NamakiLayer(YowInterfaceLayer):
     def __init__(self):
         print("init layer")
         YowInterfaceLayer.__init__(self)
         self._connected = False
         self._suffix = "@s.whatsapp.net"
-        self._broker = Broker()
 
 
     def phone_to_jid(self, phone):
@@ -27,9 +25,8 @@ class NamakiLayer(YowInterfaceLayer):
         called when a connection succeed
         """
         self._connected = True
+        self._broker = Broker()
         print("ouha!! connected")
-        #TODO
-        #start broker here
 
 
     def is_connected(self):
@@ -50,9 +47,7 @@ class NamakiLayer(YowInterfaceLayer):
                 messageProtocolEntity.getParticipant())
 
         message = messageProtocolEntity.getBody()
-        # TODO
-        # do some action here
-        print("... %s" % message)
+        self.push(message)
 
         #send ack
         self.toLower(receipt)
@@ -87,3 +82,10 @@ class NamakiLayer(YowInterfaceLayer):
         out = TextMessageProtocolEntity(message.encode(),
                 to = phone)
         self.toLower(out)
+
+    def push(self, message):
+        """
+        push message to the broker
+        """
+        print("push message to the broker")
+        self._broker.send(message)
