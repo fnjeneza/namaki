@@ -1,0 +1,21 @@
+package messages;
+
+message TextMessage {
+    optional string id = 1;
+    optional string from = 2;
+    optional string to = 3;
+    optional string body = 4;
+    optional int32 timestamp = 5;
+}
+
+message MediaMessage {
+    optional string id = 1;
+}
+
+message Message {
+    optional string command = 1;
+    enum Data {
+        TextMessage = 1;
+        MediaMessage = 2;
+    }
+}
