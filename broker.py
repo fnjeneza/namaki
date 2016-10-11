@@ -17,6 +17,9 @@ class Broker:
 
 
     def _setup_receiver(self, address, port):
+        """
+        Init a socket thread through it will receive data from client
+        """
         receiver_socket = self.context.socket(zmq.PULL)
         receiver_socket.bind("tcp://" + address + ":" + port)
         while True:
@@ -25,12 +28,18 @@ class Broker:
 
 
     def _setup_sender(self, address, port):
+        """
+        Init a (sub)socket through it will send data to client
+        """
         sender_socket = self.context.socket(zmq.PUSH)
         sender_socket.connect("tcp://" + address + ":" + port)
         return sender_socket
 
 
     def send(self, message):
+        """
+        send data to client
+        """
         self.sender.send_string(message)
 
 # just for test

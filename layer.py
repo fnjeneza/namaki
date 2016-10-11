@@ -1,6 +1,7 @@
 from yowsup.layers.interface import YowInterfaceLayer, ProtocolEntityCallback
 from yowsup.layers.protocol_receipts.protocolentities import OutgoingReceiptProtocolEntity
 from yowsup.layers.protocol_messages.protocolentities import TextMessageProtocolEntity
+from broker import Broker
 
 
 class NamakiLayer(YowInterfaceLayer):
@@ -9,6 +10,7 @@ class NamakiLayer(YowInterfaceLayer):
         YowInterfaceLayer.__init__(self)
         self._connected = False
         self._suffix = "@s.whatsapp.net"
+        self._broker = Broker()
 
 
     def phone_to_jid(self, phone):
@@ -73,6 +75,12 @@ class NamakiLayer(YowInterfaceLayer):
 
 
     def send_message(self, phone, message):
+        """
+        outgoing message
+        param:
+            phone
+            message
+        """
         if not self.has_jid(phone):
             phone = self.phone_to_jid(phone)
 
