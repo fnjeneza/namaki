@@ -2,7 +2,7 @@ from yowsup.layers.interface import YowInterfaceLayer, ProtocolEntityCallback
 from yowsup.layers.protocol_receipts.protocolentities import OutgoingReceiptProtocolEntity
 from yowsup.layers.protocol_messages.protocolentities import TextMessageProtocolEntity
 from broker import Broker
-from message import TextMessage
+from messages_pb2 import TextMessage
 
 class NamakiLayer(YowInterfaceLayer):
     def __init__(self):
@@ -24,7 +24,7 @@ class NamakiLayer(YowInterfaceLayer):
 
 
     @ProtocolEntityCallback("success")
-    def onSuccess(self, entity):
+    def _onSuccess(self, entity):
         """
         called when a connection succeed
         """
@@ -51,17 +51,20 @@ class NamakiLayer(YowInterfaceLayer):
 
         if messageProtocolEntity.getType() == "text":
             print(messageProtocolEntity)
-            message = TextMessage(id=messageProtocolEntity.getId(),
-                    src=messageProtocolEntity.getFrom(),
-                    body=messageProtocolEntity.getBody())
-            self.push(message)
+            message = TextMessage()
+            message.id = messageProtocolEntity.getId()
+            message.src = messageProtocolEntity.getFrom()
+            message.body = messageProtocolEntity.getBody()
+            print('*'*10)
+            print(message)
+            self.push(message.SerializeToString())
 
         #send ack
         self.toLower(receipt)
 
 
     @ProtocolEntityCallback("ack")
-    def onAck(self, entity):
+    def _onAck(self, entity):
         """
         called when ack is sent by a friend
         """
@@ -69,7 +72,7 @@ class NamakiLayer(YowInterfaceLayer):
 
 
     @ProtocolEntityCallback("failure")
-    def onFailure(self, entity):
+    def _onFailure(self, entity):
         """
         when authentication failed
         """
@@ -95,5 +98,4 @@ class NamakiLayer(YowInterfaceLayer):
         push message to the broker
         """
         print("push message to the broker")
-        assert isinstance(message, TextMessage), "not instance of TextMessage"
         self._broker.send(message)

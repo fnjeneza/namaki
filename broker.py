@@ -10,15 +10,17 @@ class Broker:
 
         print("Broker initialisation...")
 
+        #TODO redefine handler
         #NamakiLayer method to handler icoming message
-        self.message_handler = None
+        self._message_handler = None
+        self._started = False
 
         self.context = zmq.Context()
         Thread(target=self._setup_receiver,
                 args=(bind_address, bind_port,)).start()
         self.sender = self._setup_sender(connect_address, connect_port)
 
-        # once at this line => broker well started
+        # once at this line => broker is started
         self._started = True
 
 
@@ -34,8 +36,8 @@ class Broker:
         receiver_socket.bind("tcp://" + address + ":" + port)
         while True:
             msg = receiver_socket.recv()
-            assert self.message_handler, "message handler not set"
-            self.message_handler("33780889335", msg.decode())
+            assert self._message_handler, "message handler not set"
+            self._message_handler("33xxxxx", msg)
             print(msg)
 
 
@@ -52,11 +54,13 @@ class Broker:
         """
         send data to client
         """
-        self.sender.send_string(message)
+        assert isinstance(message, bytes), "must be a bytes"
+        self.sender.send(message)
 
 
+    #TODO better handle callbacks
     def set_message_handler(self, fn):
-        self.message_handler = fn
+        self._message_handler = fn
 
 # just for test
 if __name__ == "__main__":
