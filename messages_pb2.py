@@ -20,7 +20,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   name='messages.proto',
   package='messages',
   syntax='proto3',
-  serialized_pb=_b('\n\x0emessages.proto\x12\x08messages\x1a\x1fgoogle/protobuf/timestamp.proto\"p\n\x0bTextMessage\x12\n\n\x02id\x18\x01 \x01(\t\x12\x0c\n\x04\x66rom\x18\x02 \x01(\t\x12\n\n\x02to\x18\x03 \x01(\t\x12\x0c\n\x04\x62ody\x18\x04 \x01(\t\x12-\n\ttimestamp\x18\x05 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\"\x1a\n\x0cMediaMessage\x12\n\n\x02id\x18\x01 \x01(\t\"E\n\x07Message\x12\x0f\n\x07\x63ommand\x18\x01 \x01(\t\")\n\x04\x44\x61ta\x12\x0f\n\x0bTextMessage\x10\x00\x12\x10\n\x0cMediaMessage\x10\x01\x62\x06proto3')
+  serialized_pb=_b('\n\x0emessages.proto\x12\x08messages\x1a\x1fgoogle/protobuf/timestamp.proto\"o\n\x0bTextMessage\x12\n\n\x02id\x18\x01 \x01(\t\x12\x0b\n\x03src\x18\x02 \x01(\t\x12\n\n\x02to\x18\x03 \x01(\t\x12\x0c\n\x04\x62ody\x18\x04 \x01(\t\x12-\n\ttimestamp\x18\x05 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\"\x1a\n\x0cMediaMessage\x12\n\n\x02id\x18\x01 \x01(\t\"E\n\x07Message\x12\x0f\n\x07\x63ommand\x18\x01 \x01(\t\")\n\x04\x44\x61ta\x12\x0f\n\x0bTextMessage\x10\x00\x12\x10\n\x0cMediaMessage\x10\x01\x62\x06proto3')
   ,
   dependencies=[google_dot_protobuf_dot_timestamp__pb2.DESCRIPTOR,])
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
@@ -44,8 +44,8 @@ _MESSAGE_DATA = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   options=None,
-  serialized_start=231,
-  serialized_end=272,
+  serialized_start=230,
+  serialized_end=271,
 )
 _sym_db.RegisterEnumDescriptor(_MESSAGE_DATA)
 
@@ -65,7 +65,7 @@ _TEXTMESSAGE = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       options=None),
     _descriptor.FieldDescriptor(
-      name='from', full_name='messages.TextMessage.from', index=1,
+      name='src', full_name='messages.TextMessage.src', index=1,
       number=2, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
@@ -105,7 +105,7 @@ _TEXTMESSAGE = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=61,
-  serialized_end=173,
+  serialized_end=172,
 )
 
 
@@ -135,8 +135,8 @@ _MEDIAMESSAGE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=175,
-  serialized_end=201,
+  serialized_start=174,
+  serialized_end=200,
 )
 
 
@@ -167,8 +167,8 @@ _MESSAGE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=203,
-  serialized_end=272,
+  serialized_start=202,
+  serialized_end=271,
 )
 
 _TEXTMESSAGE.fields_by_name['timestamp'].message_type = google_dot_protobuf_dot_timestamp__pb2._TIMESTAMP
