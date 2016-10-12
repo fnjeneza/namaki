@@ -1,23 +1,19 @@
 syntax="proto3";
-import "google/protobuf/timestamp.proto";
 package messages;
 
 message TextMessage {
-    string id = 1;
-    string src = 2;
-    string to = 3;
-    string body = 4;
-    google.protobuf.Timestamp timestamp = 5;
+    string body = 1;
 }
 
 message MediaMessage {
-    string id = 1;
+    bytes data = 1;
 }
 
 message Message {
-    string command = 1;
-    enum Data {
-        TextMessage = 0;
-        MediaMessage = 1;
-    }
+    string id = 1;
+    string src = 2;
+    string dest = 3;
+    uint32 timestamp = 4;
+    TextMessage text= 5;
+    MediaMessage media= 6;
 }

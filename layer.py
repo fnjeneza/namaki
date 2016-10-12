@@ -2,7 +2,7 @@ from yowsup.layers.interface import YowInterfaceLayer, ProtocolEntityCallback
 from yowsup.layers.protocol_receipts.protocolentities import OutgoingReceiptProtocolEntity
 from yowsup.layers.protocol_messages.protocolentities import TextMessageProtocolEntity
 from broker import Broker
-from messages_pb2 import TextMessage
+from messages_pb2 import Message
 
 class NamakiLayer(YowInterfaceLayer):
     def __init__(self):
@@ -51,12 +51,12 @@ class NamakiLayer(YowInterfaceLayer):
 
         if messageProtocolEntity.getType() == "text":
             print(messageProtocolEntity)
-            message = TextMessage()
+
+            message = Message()
             message.id = messageProtocolEntity.getId()
             message.src = messageProtocolEntity.getFrom()
-            message.body = messageProtocolEntity.getBody()
-            print('*'*10)
-            print(message)
+            message.text.body = messageProtocolEntity.getBody()
+            message.timestamp = messageProtocolEntity.getTimestamp()
             self.push(message.SerializeToString())
 
         #send ack
