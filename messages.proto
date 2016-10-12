@@ -1,4 +1,5 @@
 syntax="proto3";
+import "google/protobuf/timestamp.proto";
 package messages;
 
 message TextMessage {
@@ -6,7 +7,7 @@ message TextMessage {
     string from = 2;
     string to = 3;
     string body = 4;
-    int32 timestamp = 5;
+    google.protobuf.Timestamp timestamp = 5;
 }
 
 message MediaMessage {
