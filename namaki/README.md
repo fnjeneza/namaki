@@ -1,4 +1,4 @@
-Development
+Namaki
 ===========
 Getting started
 ---------------
