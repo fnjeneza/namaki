@@ -1,0 +1,19 @@
+syntax="proto3";
+package messages;
+
+message TextMessage {
+    string body = 1;
+}
+
+message MediaMessage {
+    bytes data = 1;
+}
+
+message Message {
+    string id = 1;
+    string src = 2;
+    string dest = 3;
+    uint32 timestamp = 4;
+    TextMessage text= 5;
+    MediaMessage media= 6;
+}
