@@ -16,5 +16,5 @@ On ubuntu you can install them with:
 
 For protobuf
 [https://github.com/google/protobuf#protocol-buffers---googles-data-interchange-format|see]
-A script can be found here
 
+A script can be found [install-protobuf|here]
