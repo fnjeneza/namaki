@@ -14,7 +14,14 @@ Those packages are required to build namaki client
 On ubuntu you can install them with:
     $ apt install build-essential cmake ninja-build libzmqpp-dev
 
-For protobuf
+For protobuf we use version 3.0.2 (libprotoc 3.0.2)
 [https://github.com/google/protobuf#protocol-buffers---googles-data-interchange-format|see]
 
 A script can be found [install-protobuf|here]
+
+After installing dependencies, if libprotobuf (version installed) can not be
+found run:
+    $cmake -DPROTOBUF_LIB=$PROTOBUF
+with $PROTOBUF the path to your protobuf lib, default is
+/usr/local/lib/libprotobuf.so if installed with the script.
+
