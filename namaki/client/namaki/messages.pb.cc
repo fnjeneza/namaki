@@ -292,7 +292,6 @@ void TextMessage::SerializeWithCachedSizes(
 
 ::google::protobuf::uint8* TextMessage::InternalSerializeWithCachedSizesToArray(
     bool deterministic, ::google::protobuf::uint8* target) const {
-  (void)deterministic; // Unused
   // @@protoc_insertion_point(serialize_to_array_start:messages.TextMessage)
   // optional string body = 1;
   if (this->body().size() > 0) {
@@ -569,7 +568,6 @@ void MediaMessage::SerializeWithCachedSizes(
 
 ::google::protobuf::uint8* MediaMessage::InternalSerializeWithCachedSizesToArray(
     bool deterministic, ::google::protobuf::uint8* target) const {
-  (void)deterministic; // Unused
   // @@protoc_insertion_point(serialize_to_array_start:messages.MediaMessage)
   // optional bytes data = 1;
   if (this->data().size() > 0) {
@@ -985,7 +983,6 @@ void Message::SerializeWithCachedSizes(
 
 ::google::protobuf::uint8* Message::InternalSerializeWithCachedSizesToArray(
     bool deterministic, ::google::protobuf::uint8* target) const {
-  (void)deterministic; // Unused
   // @@protoc_insertion_point(serialize_to_array_start:messages.Message)
   // optional string id = 1;
   if (this->id().size() > 0) {

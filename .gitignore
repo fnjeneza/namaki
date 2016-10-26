@@ -3,3 +3,4 @@ config
 yowsup
 build
 compile_commands.json
+messages.pb.*
