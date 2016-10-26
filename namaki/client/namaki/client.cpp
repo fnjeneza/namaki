@@ -1,18 +1,19 @@
 #include "client.h"
-#include "messages.pb.h"
+
+#include <iostream>
+#include "messages.h"
 
 using messages::Message;
 
 namespace Namaki {
 Client::Client(const std::string &listen_address, const int &listen_port):
-    l_address(listen_address),
-    l_port(listen_port)
+    m_listen_addr{listen_address, listen_port}
 {
     GOOGLE_PROTOBUF_VERIFY_VERSION;
 
     std::cout << "Client init..." << std::endl;
     context = std::make_unique<zmq::context_t>(1);
-    setup_receiver(l_address, l_port);
+    setup_receiver(std::get<0>(m_listen_addr), std::get<1>(m_listen_addr));
     //setup_sender("*", 5557);
 }
 

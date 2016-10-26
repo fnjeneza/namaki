@@ -1,7 +1,7 @@
 #include <zmq.hpp>
-#include <iostream>
 #include <memory>
 #include <string>
+#include <utility>
 
 namespace Namaki
 {
@@ -21,8 +21,8 @@ private:
     std::unique_ptr<zmq::socket_t> sender;
     std::unique_ptr<zmq::socket_t> receiver;
 
-    std::string l_address;
-    int l_port;
+    std::pair<std::string, int> m_listen_addr; //addr to listen too
+
 };
 
 }

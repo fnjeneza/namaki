@@ -11,19 +11,27 @@ endif(CCACHE_FOUND)
 
 # name of the executable
 set(bin_name "sample")
+set(src "namaki")
+set(basic_flags "-std=c++14;-Wall;-Wpedantic;-Wextra;-fdiagnostics-color=always")
 
-add_executable(${bin_name} namaki/main.cpp)
+add_library(message_obj OBJECT ${src}/messages.pb.cc)
+add_executable(${bin_name} $<TARGET_OBJECTS:message_obj> ${src}/main.cpp)
 
 target_compile_options(
     ${bin_name} PUBLIC
-    "-std=c++14;-Wall;-Wpedantic;-Wextra;-Winline;-Wshadow;-Wuseless-cast"
+    ${basic_flags}
+    "-Winline;-Wshadow;-Wuseless-cast;-Wsign-conversion;-Wctor-dtor-privacy"
     #"-Wmissing-include-dirs;-Wduplicated-cond;-Wfloat-equal;-Wlogical-op"
     "-Wmissing-declarations;-Wsuggest-override;-Wconversion;-Wredundant-decls"
     "-Wpadded;-Wnon-virtual-dtor;-Wold-style-cast;-Wcast-align;-Woverloaded-virtual"
-    #"-Wsign-conversion;-Wctor-dtor-privacy;-Weffc++"
+    #"-Weffc++"
     #"-Werror"
-    "-fdiagnostics-color=always"
-    )
+)
+
+target_compile_options(
+    message_obj PUBLIC
+    ${basic_flags}
+)
 
 #optimization
 target_compile_options(
@@ -32,12 +40,11 @@ target_compile_options(
    )
 target_compile_definitions(${bin_name} PUBLIC "")
 
-
 # 'src' contains both .h and .cpp
 target_sources(${bin_name} PUBLIC
     namaki/client.cpp
-    namaki/messages.pb.cc
 )
+
 target_include_directories(${bin_name} PUBLIC namaki)
 
 find_library(ZMQ_LIB NAMES zmq)
