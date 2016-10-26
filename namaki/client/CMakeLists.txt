@@ -15,8 +15,6 @@ set(src "namaki")
 #protobuf source dir
 set(pb_dir "${CMAKE_SOURCE_DIR}/namaki")
 
-set(basic_flags "-std=c++14;-Wall;-Wpedantic;-Wextra;-fdiagnostics-color=always")
-
 # generate protobuf messages header and implementation
 execute_process(COMMAND protoc -I=${pb_dir} --cpp_out=${pb_dir} ${pb_dir}/messages.proto)
 add_library(message_obj OBJECT ${src}/messages.pb.cc)
@@ -24,7 +22,7 @@ add_executable(${bin_name} $<TARGET_OBJECTS:message_obj> ${src}/main.cpp)
 
 target_compile_options(
     ${bin_name} PUBLIC
-    ${basic_flags}
+    "-std=c++14;-Wall;-Wpedantic;-Wextra;-fdiagnostics-color=always"
     "-Winline;-Wshadow;-Wuseless-cast;-Wsign-conversion;-Wctor-dtor-privacy"
     #"-Wmissing-include-dirs;-Wduplicated-cond;-Wfloat-equal;-Wlogical-op"
     "-Wmissing-declarations;-Wsuggest-override;-Wconversion;-Wredundant-decls"
@@ -35,7 +33,7 @@ target_compile_options(
 
 target_compile_options(
     message_obj PUBLIC
-    ${basic_flags}
+    "-std=c++14;-Wall;-Wpedantic"
 )
 
 #optimization
