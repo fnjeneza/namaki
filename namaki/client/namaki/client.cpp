@@ -1,12 +1,38 @@
 #include "client.h"
 
+#include <memory>
+#include <zmq.hpp>
 #include <iostream>
 #include "messages.h"
 
 using messages::Message;
 
+
 namespace Namaki {
+
+class Client::Impl {
+public:
+    Impl(const std::string &listen_address, const int &listen_port);
+    ~Impl();
+
+private:
+    void setup_receiver(const std::string &address, const int &port);
+    void setup_sender(const std::string &address, const int &port);
+    void handle_incoming(zmq::message_t &message);
+
+    std::unique_ptr<zmq::context_t> context;
+    std::unique_ptr<zmq::socket_t> sender;
+    std::unique_ptr<zmq::socket_t> receiver;
+    std::pair<std::string, int> m_listen_addr; //addr to listen too
+};
+
 Client::Client(const std::string &listen_address, const int &listen_port):
+    pimpl{std::make_unique<Impl>(listen_address, listen_port)}
+{}
+
+Client::~Client() = default;
+
+Client::Impl::Impl(const std::string &listen_address, const int &listen_port):
     m_listen_addr{listen_address, listen_port}
 {
     GOOGLE_PROTOBUF_VERIFY_VERSION;
@@ -17,12 +43,12 @@ Client::Client(const std::string &listen_address, const int &listen_port):
     //setup_sender("*", 5557);
 }
 
-Client::~Client()
+Client::Impl::~Impl()
 {
     ::google::protobuf::ShutdownProtobufLibrary();
 }
 
-void Client::setup_receiver(const std::string &address, const int &port)
+void Client::Impl::setup_receiver(const std::string &address, const int &port)
 {
     receiver = std::make_unique<zmq::socket_t>(*context, ZMQ_PULL);
     auto s_port = std::to_string(port);
@@ -36,14 +62,14 @@ void Client::setup_receiver(const std::string &address, const int &port)
     }
 }
 
-void Client::setup_sender(const std::string &address, const int &port)
+void Client::Impl::setup_sender(const std::string &address, const int &port)
 {
     sender = std::make_unique<zmq::socket_t>(*context, ZMQ_PUSH);
     auto s_port = std::to_string(port);
     sender->connect("tcp://"+address+":"+s_port);
 }
 
-void Client::handle_incoming(zmq::message_t &message)
+void Client::Impl::handle_incoming(zmq::message_t &message)
 {
     std::string s_message(static_cast<char*>(message.data()), message.size());
 
