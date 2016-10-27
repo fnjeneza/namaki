@@ -1,9 +1,12 @@
-#include "client.h"
+#include "connector.h"
+#include <iostream>
+#include "messages.h"
 
 int main()
 {
-    Namaki::Client namaki("*", 5558);
 
+    Namaki::Connector c;
+    c.receive();
     //::google::protobuf::ShutdownProtobufLibrary();
     return 0;
 }
