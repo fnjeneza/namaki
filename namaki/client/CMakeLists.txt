@@ -45,7 +45,8 @@ target_compile_definitions(${bin_name} PUBLIC "")
 
 # 'src' contains both .h and .cpp
 target_sources(${bin_name} PUBLIC
-    namaki/client.cpp
+    ${src}/connector.cpp
+    ${src}/message_handler.cpp
 )
 
 target_include_directories(${bin_name} PUBLIC namaki)
