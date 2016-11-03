@@ -22,9 +22,9 @@ add_library(${bin_name} SHARED $<TARGET_OBJECTS:message_obj> ${src}/connector.cp
 
 target_compile_options(
     ${bin_name} PUBLIC
-    "-std=c++14;-fPIC;-Wall;-Wpedantic;-Wextra;-fdiagnostics-color=always"
+    "-fPIC;-Wall;-Wpedantic;-Wextra;-fdiagnostics-color=always"
     "-Winline;-Wshadow;-Wuseless-cast;-Wsign-conversion;-Wctor-dtor-privacy"
-    #"-Wmissing-include-dirs;-Wduplicated-cond;-Wfloat-equal;-Wlogical-op"
+    "-Wmissing-include-dirs;-Wduplicated-cond;-Wfloat-equal;-Wlogical-op"
     "-Wmissing-declarations;-Wsuggest-override;-Wconversion;-Wredundant-decls"
     "-Wpadded;-Wnon-virtual-dtor;-Wold-style-cast;-Wcast-align;-Woverloaded-virtual"
     #"-Weffc++"
@@ -33,7 +33,7 @@ target_compile_options(
 
 target_compile_options(
     message_obj PUBLIC
-    "-std=c++14;-fPIC;-Wall;-Wpedantic"
+    "-fPIC;-Wall;-Wpedantic"
 )
 
 #optimization
