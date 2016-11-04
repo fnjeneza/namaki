@@ -13,7 +13,8 @@ public:
     ~Connector();
 
     messages::Message receive() const;
-    //void send(Message) const;
+    void send(const messages::Message &message) const;
+
 private:
     class Impl;
     std::unique_ptr<Impl> pimpl;
