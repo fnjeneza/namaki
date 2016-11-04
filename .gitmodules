@@ -1,0 +1,3 @@
+[submodule "namaki/client/spdlog"]
+	path = namaki/client/spdlog
+	url = https://github.com/gabime/spdlog.git
