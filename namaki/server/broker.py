@@ -37,8 +37,7 @@ class Broker:
         while True:
             msg = receiver_socket.recv()
             assert self._message_handler, "message handler not set"
-            self._message_handler("33xxxxx", msg)
-            print(msg)
+            self._message_handler(msg)
 
 
     def _setup_sender(self, address, port):

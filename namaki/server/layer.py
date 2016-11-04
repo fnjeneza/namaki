@@ -79,17 +79,23 @@ class NamakiLayer(YowInterfaceLayer):
         print("Login failed, reason %s" % entity.getReason())
 
 
-    def send_message(self, phone, message):
+    def send_message(self, message):
         """
         outgoing message
         param:
-            phone
             message
         """
+        msg = Message()
+        msg.ParseFromString(message)
+        phone = msg.dest
+        body = msg.text.body
+
         if not self.has_jid(phone):
             phone = self.phone_to_jid(phone)
 
-        out = TextMessageProtocolEntity(message.encode(),
+        print("message to be sent to whatsapp number %s", phone)
+
+        out = TextMessageProtocolEntity(body.encode(),
                 to = phone)
         self.toLower(out)
 
