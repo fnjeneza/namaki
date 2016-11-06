@@ -18,13 +18,15 @@ On ubuntu you can install them with:
 ```
 
 For protobuf we use version 3.0.2 (libprotoc 3.0.2)
-[https://github.com/google/protobuf#protocol-buffers---googles-data-interchange-format|see]
+[see](https://github.com/google/protobuf#protocol-buffers---googles-data-interchange-format)
 
-A script can be found [install-protobuf|here]
+A script can be found (here)[./install-protobuf]
 
 After installing dependencies, if libprotobuf (version installed) can not be
 found run:
+```
     $cmake -DPROTOBUF_LIB=$PROTOBUF
-with $PROTOBUF the path to your protobuf lib, default is
-/usr/local/lib/libprotobuf.so if installed with the script.
+```
+with **$PROTOBUF** the path to your protobuf lib, default is
+**/usr/local/lib/libprotobuf.so** if installed with the script.
 
