@@ -21,7 +21,7 @@ For protobuf we use version 3.0.2 (libprotoc 3.0.2)
 [see](https://github.com/google/protobuf#protocol-buffers---googles-data-interchange-format)
 
 
-A script can be found [here](./install-protobuf)
+A script can be found [here](./install-protobuf.sh)
 
 After installing dependencies, if libprotobuf (version installed) can not be
 found run:
