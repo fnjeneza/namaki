@@ -1,6 +1,5 @@
 cmake_minimum_required(VERSION 3.5)
 
-
 project("namaki")
 
 find_program(CCACHE_FOUND ccache)
@@ -10,7 +9,7 @@ if(CCACHE_FOUND)
 endif(CCACHE_FOUND)
 
 # name of the executable
-set(bin_name "namakic")
+set(lib_name "namakiclient")
 set(src "namaki")
 #protobuf source dir
 set(pb_dir "${CMAKE_SOURCE_DIR}/namaki")
@@ -18,10 +17,10 @@ set(pb_dir "${CMAKE_SOURCE_DIR}/namaki")
 # generate protobuf messages header and implementation
 execute_process(COMMAND protoc -I=${pb_dir} --cpp_out=${pb_dir} ${pb_dir}/messages.proto)
 add_library(message_obj OBJECT ${src}/messages.pb.cc)
-add_library(${bin_name} SHARED $<TARGET_OBJECTS:message_obj> ${src}/connector.cpp)
+add_library(${lib_name} STATIC $<TARGET_OBJECTS:message_obj> ${src}/connector.cpp)
 
 target_compile_options(
-    ${bin_name} PUBLIC
+    ${lib_name} PUBLIC
     "-fPIC;-Wall;-Wpedantic;-Wextra;-fdiagnostics-color=always"
     "-Winline;-Wshadow;-Wuseless-cast;-Wsign-conversion;-Wctor-dtor-privacy"
     "-Wmissing-include-dirs;-Wduplicated-cond;-Wfloat-equal;-Wlogical-op"
@@ -38,16 +37,18 @@ target_compile_options(
 
 #optimization
 target_compile_options(
-   ${bin_name} PUBLIC
+   ${lib_name} PUBLIC
    "-Wstack-protector;-fstack-protector"
    )
-target_compile_definitions(${bin_name} PUBLIC "")
+target_compile_definitions(${lib_name} PUBLIC "")
 
-target_include_directories(${bin_name} PUBLIC namaki)
+target_include_directories(${lib_name} PUBLIC namaki)
 
 find_library(ZMQ_LIB NAMES zmq)
 find_library(PROTOBUF_LIB NAMES protobuf)
-target_link_libraries(${bin_name} PUBLIC
+find_library(SQLITE3_LIB NAMES sqlite3)
+target_link_libraries(${lib_name} PUBLIC
     ${ZMQ_LIB}
     ${PROTOBUF_LIB}
+    ${SQLITE3_LIB}
 )

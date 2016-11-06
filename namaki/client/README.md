@@ -10,9 +10,12 @@ Those packages are required to build namaki client
     * ninja-build (optional)
     * zmq
     * protocol buffer
+    * sqlite3
 
 On ubuntu you can install them with:
-    $ apt install build-essential cmake ninja-build libzmqpp-dev
+```
+    $ apt install build-essential cmake ninja-build libzmqpp-dev libsqlite3-dev
+```
 
 For protobuf we use version 3.0.2 (libprotoc 3.0.2)
 [https://github.com/google/protobuf#protocol-buffers---googles-data-interchange-format|see]

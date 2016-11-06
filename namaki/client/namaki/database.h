@@ -15,8 +15,8 @@ public:
     Database();
     ~Database();
 
-    std::vector<Namaki::Contact> contacts() const;
     Namaki::Contact contact(const std::string &id) const;
+    std::vector<Namaki::Contact> contacts() const;
     std::vector<Message> messages(const std::string &id) const;
 
 private:

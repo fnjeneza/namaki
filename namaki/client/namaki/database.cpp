@@ -27,7 +27,27 @@ Database::~Database(){
     sqlite3_close(m_db);
 }
 
+Namaki::Contact Database::contact(const std::string &id) const {
+    std::string cmd = "SELECT message.id, message.contact_id,\
+                       contact.name,message.body \
+                       FROM message, contact \
+                       WHERE message.contact_id='"+id+"'\
+                       ORDER BY message.id DESC \
+                       LIMIT 1";
+    auto result = execute(cmd);
 
+    if(result.size() == 0){
+        return Contact();
+    }
+
+    auto columns = result[0];
+    auto contact_id = columns[1];
+    auto contact_name = columns[2];
+    auto last_message = columns[3];
+    Contact contact(contact_id, contact_name, last_message);
+    return contact;
+
+}
 std::vector<std::vector<std::string>>
 Database::execute(const std::string &sql) const{
     char* err = nullptr;
