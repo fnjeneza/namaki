@@ -4,27 +4,34 @@
 #include <string>
 #include <vector>
 
-using sqlite3 = struct sqlite3;
+struct sqlite3;
 
 namespace Namaki{
-class Contact;
-class Message;
+struct Contact;
+struct Message;
 
 class Database{
 public:
     Database();
     ~Database();
 
+    bool add_contact(const Contact &contact) const;
+    bool remove_contact(const std::string &contact) const;
     Namaki::Contact contact(const std::string &id) const;
     std::vector<Namaki::Contact> contacts() const;
+    bool add_message(const Message &message) const;
+    bool remove_message(const std::string &id) const;
     std::vector<Message> messages(const std::string &id) const;
 
 private:
     std::vector<std::vector<std::string>>
-    execute(const std::string &sql) const;
+    query(const std::string &sql) const;
+    bool execute(const std::string &sql) const;
 
 private:
     const char *m_db_name = "namaki.db";
+    const uint SQLITE_TRUE = 1;
+    const uint SQLITE_FALSE = 0;
     sqlite3 *m_db;
 };
 } //namespace
