@@ -84,25 +84,23 @@ Namaki::Contact Database::contact(const std::string &id) const {
 }
 
 bool Database::add_message(const Message &message) const{
-    auto out = message.out == true ? SQLITE_TRUE : SQLITE_FALSE;
-    auto read = message.read == false ? SQLITE_FALSE : SQLITE_TRUE;
-    auto ts = message.timestamp.empty() ?
-        "strftime('%s','now')" : message.timestamp;
-
-    std::string sql = fmt::format("INSERT INTO message \
-            VALUES(null, '{}', {}, {}, {}, {});",
+    auto ack = (message.ack == false ? SQLITE_FALSE : SQLITE_TRUE);
+    auto direction (message.direction == Direction::IN ? "IN": "OUT");
+    std::string sql = fmt::format("INSERT INTO message(body, direction, ack, \
+                      timestamp, contact_id ) \
+            VALUES('{}', '{}', {}, {}, {});",
             message.body,
-            out,
-            read,
-            ts,
+            direction,
+            ack,
+            message.timestamp,
             message.contact_id);
     return execute(sql);
 }
 
 
 std::vector<Message> Database::messages(const std::string &contact_id) const {
-    std::string sql = fmt::format("SELECT message.id, message.body, \
-            datetime(message.timestamp, 'unixepoch'), message.out, message.read FROM message\
+    std::string sql = fmt::format("SELECT message.body, \
+            timestamp FROM message\
             WHERE message.contact_id = {}",
             contact_id);
     auto results = query(sql);
@@ -115,11 +113,8 @@ std::vector<Message> Database::messages(const std::string &contact_id) const {
 
     for(auto result : results){
         Message message;
-        message.id = result[0];
-        message.body = result[1];
-        message.timestamp = result[2];
-        message.out = (result[3]==std::to_string(SQLITE_TRUE) ? true : false);
-        message.read = (result[4]==std::to_string(SQLITE_TRUE) ? true : false);
+        message.body = result[0];
+        message.timestamp = stoul(result[1]);
         message_list.push_back(std::move(message));
     }
 
@@ -129,7 +124,7 @@ std::vector<Message> Database::messages(const std::string &contact_id) const {
 size_t Database::unread(const std::string &id) const{
     std::string sql = fmt::format("SELECT count(id) \
             FROM message \
-            WHERE message.read={} AND message.contact_id={}",
+            WHERE message.ack={} AND message.contact_id={}",
             SQLITE_FALSE, id);
     auto result = query(sql);
     return std::stoul(result[0][0]);

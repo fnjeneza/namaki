@@ -7,6 +7,7 @@
 #include <cstdlib>
 #include <sqlite3.h>
 
+using Namaki::Direction;
 
 TEST_CASE("(fixture) setup database", "[database]"){
     auto out = std::system("bash db-fixture.sh");
@@ -58,17 +59,17 @@ TEST_CASE("database manipulation", "[database]"){
     SECTION("adding message"){
         Namaki::Message m1;
         m1.body = "hello world";
-        m1.out = true;
-        m1.read = true;
+        m1.direction = Direction::OUT;
+        m1.ack = true;
         m1.contact_id = "123456";
-        m1.timestamp="4578561";
+        m1.timestamp=4578561;
 
         Namaki::Message m2;
         m2.body = "bonjour le monde";
-        m2.out = false;
-        m2.read = true;
+        m2.direction = Direction::OUT;
+        m2.ack = true;
         m2.contact_id = "123456";
-        m2.timestamp="4578561";
+        m2.timestamp=4578561;
         REQUIRE(db.add_message(m1));
         REQUIRE(db.add_message(m2));
     }
@@ -87,10 +88,10 @@ TEST_CASE("database manipulation", "[database]"){
 
         Namaki::Message m1;
         m1.body = "hello world";
-        m1.out = true;
-        m1.read = false;
+        m1.direction = Direction::OUT;
+        m1.ack = false;
         m1.contact_id = turner.id;
-        m1.timestamp="123654";
+        m1.timestamp=123654;
         REQUIRE(db.add_message(m1));
         auto result = db.unread(turner.id);
         REQUIRE(result == 1);
@@ -105,17 +106,17 @@ TEST_CASE("database manipulation", "[database]"){
 
         Namaki::Message m1;
         m1.body = "message1";
-        m1.out = true;
-        m1.read = false;
+        m1.direction = Direction::OUT;
+        m1.ack = false;
         m1.contact_id = contact_.id;
-        m1.timestamp="123456";
+        m1.timestamp=123456;
         REQUIRE(db.add_message(m1));
         Namaki::Message m2;
         m2.body = "message2";
-        m2.out = true;
-        m2.read = false;
+        m2.direction = Direction::OUT;
+        m2.ack = false;
         m2.contact_id = contact_.id;
-        m2.timestamp="123457";
+        m2.timestamp=123457;
         REQUIRE(db.add_message(m2));
         auto result = db.last_message(contact_.id);
         REQUIRE(result == m2.body);

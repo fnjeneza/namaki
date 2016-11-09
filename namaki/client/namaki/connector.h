@@ -3,17 +3,15 @@
 
 #include <memory>
 
-namespace messages{
-class Message;
-}
 namespace Namaki{
+class Message;
 class Connector{
 public:
     Connector();
     ~Connector();
 
-    messages::Message receive() const;
-    void send(const messages::Message &message) const;
+    Namaki::Message receive() const;
+    void send(const Namaki::Message &message) const;
 
 private:
     class Impl;

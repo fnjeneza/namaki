@@ -3,8 +3,9 @@
 #include <zmq.hpp>
 #include <iostream>
 #include "messages.h"
+#include "message.h"
 
-using messages::Message;
+using Namaki::Message;
 namespace Namaki{
 
 class Connector::Impl{
@@ -62,13 +63,25 @@ Message Connector::Impl::incoming() const{
     m_receiver->recv(&msg);
 
     std::string s_message(static_cast<char*>(msg.data()), msg.size());
-    Message message;
+    messages::Message message;
     message.ParseFromString(s_message);
-    return message;
+
+    Namaki::Message m;
+    m.direction = Direction::IN;
+    m.body = message.text().body();
+    m.timestamp = static_cast<size_t>(message.timestamp());
+
+    return m;
 }
 
 void Connector::Impl::outgoing(const Message &message) const{
-    auto out = message.SerializeAsString();
+    messages::Message m;
+    m.set_dest(message.contact_id);
+    m.set_timestamp(static_cast<uint>(message.timestamp));
+    m.mutable_text()->set_body(message.body);
+    auto out = m.SerializeAsString();
+
+
     auto size = out.size();
     zmq::message_t msg(size);
     memcpy(msg.data(), out.c_str(), size);

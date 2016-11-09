@@ -3,13 +3,19 @@
 
 #include <string>
 namespace Namaki{
+enum class Direction{
+    IN,
+    OUT
+};
+
 struct Message{
     std::string id;
-    std::string timestamp;
+    std::string whatsapp_id;
     std::string body;
     std::string contact_id;
-    bool out; //true for outgoing message
-    bool read; //true if message has been opened
+    size_t timestamp;
+    bool ack; //true if message has been opened
+    Direction direction;
 };
 }// namespace
 

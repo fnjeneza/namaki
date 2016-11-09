@@ -11,9 +11,10 @@ CREATE TABLE IF NOT EXISTS contact (
 ---
 CREATE TABLE IF NOT EXISTS message (
     id INTEGER PRIMARY KEY,
+    whatsapp_id INTEGER,
     body TEXT,
-    out BOOLEAN,
-    read BOOLEAN,
+    ack BOOLEAN,
+    direction VARCHAR(3),
     timestamp INTEGER NOT NULL,
     contact_id VARCHAR(50),
     FOREIGN KEY(contact_id) REFERENCES contact(id)
