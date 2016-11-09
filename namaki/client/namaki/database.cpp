@@ -86,7 +86,8 @@ Namaki::Contact Database::contact(const std::string &id) const {
 bool Database::add_message(const Message &message) const{
     auto out = message.out == true ? SQLITE_TRUE : SQLITE_FALSE;
     auto read = message.read == false ? SQLITE_FALSE : SQLITE_TRUE;
-    auto ts = message.timestamp.empty() ? "now" : message.timestamp;
+    auto ts = message.timestamp.empty() ?
+        "strftime('%s','now')" : message.timestamp;
 
     std::string sql = fmt::format("INSERT INTO message \
             VALUES(null, '{}', {}, {}, {}, {});",
@@ -101,7 +102,7 @@ bool Database::add_message(const Message &message) const{
 
 std::vector<Message> Database::messages(const std::string &contact_id) const {
     std::string sql = fmt::format("SELECT message.id, message.body, \
-            time(message.timestamp), message.out, message.read FROM message\
+            datetime(message.timestamp, 'unixepoch'), message.out, message.read FROM message\
             WHERE message.contact_id = {}",
             contact_id);
     auto results = query(sql);
