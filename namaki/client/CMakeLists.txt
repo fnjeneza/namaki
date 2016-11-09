@@ -19,7 +19,7 @@ set(pb_dir "${CMAKE_SOURCE_DIR}/namaki")
 # generate protobuf messages header and implementation
 execute_process(COMMAND protoc -I=${pb_dir} --cpp_out=${pb_dir} ${pb_dir}/messages.proto)
 add_library(message_obj OBJECT ${src_dir}/messages.pb.cc)
-add_library(${lib_name} STATIC $<TARGET_OBJECTS:message_obj> ${src_dir}/connector.cpp)
+add_library(${lib_name} SHARED $<TARGET_OBJECTS:message_obj> ${src_dir}/connector.cpp)
 
 target_include_directories(${lib_name} PUBLIC namaki)
 target_include_directories(${lib_name} SYSTEM PUBLIC ${fmt_dir})
@@ -29,7 +29,7 @@ target_sources(${lib_name} PUBLIC
 )
 target_compile_options(
     ${lib_name} PUBLIC
-    "-Wall;-Wpedantic;-Wextra;-fdiagnostics-color=always"
+    "-fPIC;-Wall;-Wpedantic;-Wextra;-fdiagnostics-color=always"
     "-Winline;-Wshadow;-Wuseless-cast;-Wsign-conversion;-Wctor-dtor-privacy"
     "-Wmissing-include-dirs;-Wduplicated-cond;-Wfloat-equal;-Wlogical-op"
     "-Wmissing-declarations;-Wsuggest-override;-Wconversion;-Wredundant-decls"

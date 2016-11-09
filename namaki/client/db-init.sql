@@ -14,7 +14,7 @@ CREATE TABLE IF NOT EXISTS message (
     body TEXT,
     out BOOLEAN,
     read BOOLEAN,
-    timestamp INTEGER NOT NULL,
+    timestamp DATE NOT NULL,
     contact_id VARCHAR(50),
     FOREIGN KEY(contact_id) REFERENCES contact(id)
 );

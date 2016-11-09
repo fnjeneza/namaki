@@ -31,7 +31,7 @@ TEST_CASE("database manipulation", "[database]"){
     }
 
     SECTION("adding a contact who already exist"){
-        REQUIRE_FALSE(db.add_contact(contact));
+        REQUIRE_THROWS(db.add_contact(contact));
     }
 
     SECTION("removing contact"){
@@ -57,7 +57,6 @@ TEST_CASE("database manipulation", "[database]"){
 
     SECTION("adding message"){
         Namaki::Message m1;
-        m1.id = "1";
         m1.body = "hello world";
         m1.out = true;
         m1.read = true;
@@ -65,7 +64,6 @@ TEST_CASE("database manipulation", "[database]"){
         m1.timestamp="4578561";
 
         Namaki::Message m2;
-        m2.id = "2";
         m2.body = "bonjour le monde";
         m2.out = false;
         m2.read = true;
@@ -78,6 +76,59 @@ TEST_CASE("database manipulation", "[database]"){
     SECTION("retrieving all messages"){
         auto result = db.messages("123456");
         REQUIRE(result.size() == 2);
+    }
+
+    SECTION("retrieving unread message"){
+
+        Namaki::Contact turner;
+        turner.id = "147852";
+        turner.name = "Paige Turner";
+        REQUIRE(db.add_contact(turner));
+
+        Namaki::Message m1;
+        m1.body = "hello world";
+        m1.out = true;
+        m1.read = false;
+        m1.contact_id = turner.id;
+        m1.timestamp="123654";
+        REQUIRE(db.add_message(m1));
+        auto result = db.unread(turner.id);
+        REQUIRE(result == 1);
+    }
+
+    SECTION("retrieving last message"){
+
+        Namaki::Contact contact_;
+        contact_.id = "456987";
+        contact_.name = "Barb Ackue";
+        REQUIRE(db.add_contact(contact_));
+
+        Namaki::Message m1;
+        m1.body = "message1";
+        m1.out = true;
+        m1.read = false;
+        m1.contact_id = contact_.id;
+        m1.timestamp="123456";
+        REQUIRE(db.add_message(m1));
+        Namaki::Message m2;
+        m2.body = "message2";
+        m2.out = true;
+        m2.read = false;
+        m2.contact_id = contact_.id;
+        m2.timestamp="123457";
+        REQUIRE(db.add_message(m2));
+        auto result = db.last_message(contact_.id);
+        REQUIRE(result == m2.body);
+
+    }
+
+    SECTION("retrieving empty message as last message when there is not one"){
+        Namaki::Contact contact_;
+        contact_.id = "987654";
+        contact_.name = "Anna Mull";
+        REQUIRE(db.add_contact(contact_));
+        auto m =db.last_message(contact_.id);
+        REQUIRE(m.empty());
     }
 
 

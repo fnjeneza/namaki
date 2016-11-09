@@ -22,6 +22,8 @@ public:
     bool add_message(const Message &message) const;
     bool remove_message(const std::string &id) const;
     std::vector<Message> messages(const std::string &id) const;
+    size_t unread(const std::string &id) const;
+    std::string last_message(const std::string &id) const;
 
 private:
     std::vector<std::vector<std::string>>

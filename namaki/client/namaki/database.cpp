@@ -24,6 +24,8 @@ Database::Database(){
         std::string error("Sqlite3 error: "+std::to_string(status));
         throw std::runtime_error(error);
     }
+    // enable foreign key support
+    execute("PRAGMA foreign_keys = ON;");
 }
 
 Database::~Database(){
@@ -83,14 +85,15 @@ Namaki::Contact Database::contact(const std::string &id) const {
 
 bool Database::add_message(const Message &message) const{
     auto out = message.out == true ? SQLITE_TRUE : SQLITE_FALSE;
-    auto read = message.read == true ? SQLITE_TRUE : SQLITE_FALSE;
+    auto read = message.read == false ? SQLITE_FALSE : SQLITE_TRUE;
+    auto ts = message.timestamp.empty() ? "now" : message.timestamp;
+
     std::string sql = fmt::format("INSERT INTO message \
-            VALUES({},'{}', {}, {}, {}, {});",
-            message.id,
+            VALUES(null, '{}', {}, {}, {}, {});",
             message.body,
             out,
             read,
-            message.timestamp,
+            ts,
             message.contact_id);
     return execute(sql);
 }
@@ -98,7 +101,7 @@ bool Database::add_message(const Message &message) const{
 
 std::vector<Message> Database::messages(const std::string &contact_id) const {
     std::string sql = fmt::format("SELECT message.id, message.body, \
-            message.timestamp, message.out, message.read FROM message\
+            time(message.timestamp), message.out, message.read FROM message\
             WHERE message.contact_id = {}",
             contact_id);
     auto results = query(sql);
@@ -121,6 +124,32 @@ std::vector<Message> Database::messages(const std::string &contact_id) const {
 
     return message_list;
 }
+
+size_t Database::unread(const std::string &id) const{
+    std::string sql = fmt::format("SELECT count(id) \
+            FROM message \
+            WHERE message.read={} AND message.contact_id={}",
+            SQLITE_FALSE, id);
+    auto result = query(sql);
+    return std::stoul(result[0][0]);
+}
+
+std::string Database::last_message(const std::string &id) const{
+    std::string sql = fmt::format("SELECT message.body, message.timestamp\
+            FROM message\
+            WHERE message.contact_id={}\
+            ORDER BY message.timestamp DESC\
+            LIMIT 1",
+            id);
+    auto result = query(sql);
+
+    if (result.empty()){
+        return std::string();
+    }
+
+    return result[0][0];
+}
+
 std::vector<std::vector<std::string>>
 Database::query(const std::string &sql) const{
     char* err = nullptr;
@@ -142,7 +171,7 @@ Database::query(const std::string &sql) const{
 
     if(err != nullptr){
     //    logger.debug(std::to_string(err));
-    //  throw std::runtime_error(std::string(err));
+      throw std::runtime_error(std::string(err));
     }
 
     return std::move (data.rows);
@@ -153,15 +182,13 @@ bool Database::execute(const std::string &sql) const{
     char *err = nullptr;
     sqlite3_exec(m_db,
             sql.c_str(),
-            [](void* , int , char** , char**)->int{
-                return 0;
-            },
+            nullptr,
             nullptr,
             &err);
 
     if(err != nullptr){
       //  logger.debug(std::to_string(err));
-      //throw std::runtime_error(std::string(err));
+      throw std::runtime_error(std::string(err));
       return false;
     }
 

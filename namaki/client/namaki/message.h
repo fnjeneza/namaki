@@ -1,5 +1,5 @@
-#ifndef MESSAGE_H
-#define MESSAGE_H
+#ifndef NAMAKI_MESSAGE_H
+#define NAMAKI_MESSAGE_H
 
 #include <string>
 namespace Namaki{
@@ -13,4 +13,4 @@ struct Message{
 };
 }// namespace
 
-#endif /* MESSAGE_H */
+#endif /* NAMAKI_MESSAGE_H */
