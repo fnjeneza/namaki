@@ -103,7 +103,7 @@ bool Database::add_message(const Message &message) const{
 
 std::vector<Message> Database::messages(const std::string &contact_id) const {
     std::string sql = fmt::format("SELECT message.body, \
-            timestamp FROM message\
+            timestamp, direction FROM message\
             WHERE message.contact_id = '{}'",
             contact_id);
     auto results = query(sql);
@@ -118,6 +118,7 @@ std::vector<Message> Database::messages(const std::string &contact_id) const {
         Message message;
         message.body = result[0];
         message.timestamp = stoul(result[1]);
+        message.direction = (result[2] == "IN") ? Direction::IN : Direction::OUT;
         message_list.push_back(std::move(message));
     }
 
