@@ -3,6 +3,7 @@
 
 #include <string>
 #include <utility>
+#include <ctime>
 
 namespace Namaki{
 enum struct Direction{
@@ -16,7 +17,7 @@ struct Message{
     std::string whatsapp_id{};
     std::string body{};
     std::string contact_id{};
-    size_t timestamp{};
+    size_t timestamp{static_cast<size_t>(std::time(nullptr))};
     bool ack{}; //true if message has been opened
     Direction direction{};
 
