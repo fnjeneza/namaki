@@ -26,6 +26,7 @@ target_include_directories(${lib_name} SYSTEM PUBLIC ${fmt_dir})
 
 target_sources(${lib_name} PUBLIC
     ${src_dir}/database.cpp
+    ${src_dir}/message.cpp
 )
 target_compile_options(
     ${lib_name} PUBLIC
@@ -34,7 +35,7 @@ target_compile_options(
     "-Wmissing-include-dirs;-Wduplicated-cond;-Wfloat-equal;-Wlogical-op"
     "-Wmissing-declarations;-Wsuggest-override;-Wconversion;-Wredundant-decls"
     "-Wnon-virtual-dtor;-Wold-style-cast;-Wcast-align;-Woverloaded-virtual"
-    #"-Weffc++"
+    "-Weffc++"
     #"-Werror"
 )
 

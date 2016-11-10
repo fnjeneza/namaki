@@ -15,6 +15,7 @@ public:
     Database();
     ~Database();
 
+    void connect(const std::string &db_name="namaki.db");
     bool add_contact(const Contact &contact) const;
     bool remove_contact(const std::string &contact) const;
     Namaki::Contact contact(const std::string &id) const;
@@ -24,6 +25,7 @@ public:
     std::vector<Message> messages(const std::string &id) const;
     size_t unread(const std::string &id) const;
     std::string last_message(const std::string &id) const;
+    bool ack(const std::string &id) const;
 
 private:
     std::vector<std::vector<std::string>>
@@ -31,10 +33,9 @@ private:
     bool execute(const std::string &sql) const;
 
 private:
-    const char *m_db_name = "namaki.db";
     const uint SQLITE_TRUE = 1;
     const uint SQLITE_FALSE = 0;
-    sqlite3 *m_db;
+    sqlite3 *m_db{nullptr};
 };
 } //namespace
 #endif /* DATABASE_H */

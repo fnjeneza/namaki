@@ -9,6 +9,7 @@ class Connector{
 public:
     Connector();
     ~Connector();
+    Connector(const Connector&) = delete;
 
     Namaki::Message receive() const;
     void send(const Namaki::Message &message) const;

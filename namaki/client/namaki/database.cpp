@@ -13,12 +13,19 @@ using Namaki::Contact;
 using sqlite3 = struct sqlite3;
 
 struct Data{
-    std::vector<std::vector<std::string>> rows;
+    std::vector<std::vector<std::string>> rows{};
 };
 
 namespace Namaki{
 Database::Database(){
-    auto status = sqlite3_open(m_db_name, &m_db);
+    connect();
+}
+
+Database::~Database(){
+    sqlite3_close(m_db);
+}
+void Database::connect(const std::string &db_name){
+    auto status = sqlite3_open(db_name.c_str(), &m_db);
 
     if(status != SQLITE_OK){
         std::string error("Sqlite3 error: "+std::to_string(status));
@@ -28,19 +35,15 @@ Database::Database(){
     execute("PRAGMA foreign_keys = ON;");
 }
 
-Database::~Database(){
-    sqlite3_close(m_db);
-}
-
 bool Database::add_contact(const Contact &contact) const{
-    std::string sql = fmt::format("INSERT INTO contact VALUES({}, '{}');",
+    std::string sql = fmt::format("INSERT INTO contact VALUES('{}', '{}');",
             contact.id,
             contact.name);
     return execute(sql);
 }
 
 bool Database::remove_contact(const std::string &id) const {
-    std::string sql = fmt::format("DELETE FROM contact WHERE id = {}", id);
+    std::string sql = fmt::format("DELETE FROM contact WHERE id = '{}'", id);
     return execute(sql);
 }
 
@@ -67,7 +70,7 @@ std::vector<Contact> Database::contacts() const {
 Namaki::Contact Database::contact(const std::string &id) const {
     std::string cmd = fmt::format("SELECT contact.id, contact.name \
                        FROM contact \
-                       WHERE contact.id={}",
+                       WHERE contact.id='{}'",
                        id);
     auto result = query(cmd);
 
@@ -88,7 +91,7 @@ bool Database::add_message(const Message &message) const{
     auto direction (message.direction == Direction::IN ? "IN": "OUT");
     std::string sql = fmt::format("INSERT INTO message(body, direction, ack, \
                       timestamp, contact_id ) \
-            VALUES('{}', '{}', {}, {}, {});",
+            VALUES('{}', '{}', {}, {}, '{}');",
             message.body,
             direction,
             ack,
@@ -101,7 +104,7 @@ bool Database::add_message(const Message &message) const{
 std::vector<Message> Database::messages(const std::string &contact_id) const {
     std::string sql = fmt::format("SELECT message.body, \
             timestamp FROM message\
-            WHERE message.contact_id = {}",
+            WHERE message.contact_id = '{}'",
             contact_id);
     auto results = query(sql);
 
@@ -124,7 +127,7 @@ std::vector<Message> Database::messages(const std::string &contact_id) const {
 size_t Database::unread(const std::string &id) const{
     std::string sql = fmt::format("SELECT count(id) \
             FROM message \
-            WHERE message.ack={} AND message.contact_id={}",
+            WHERE message.ack={} AND message.contact_id='{}'",
             SQLITE_FALSE, id);
     auto result = query(sql);
     return std::stoul(result[0][0]);
@@ -133,7 +136,7 @@ size_t Database::unread(const std::string &id) const{
 std::string Database::last_message(const std::string &id) const{
     std::string sql = fmt::format("SELECT message.body, message.timestamp\
             FROM message\
-            WHERE message.contact_id={}\
+            WHERE message.contact_id='{}'\
             ORDER BY message.timestamp DESC\
             LIMIT 1",
             id);
@@ -144,6 +147,15 @@ std::string Database::last_message(const std::string &id) const{
     }
 
     return result[0][0];
+}
+
+bool Database::ack(const std::string &id) const{
+    std::string sql = fmt::format("UPDATE message\
+                        SET ack={}\
+                       WHERE message.contact_id='{}'",
+                    SQLITE_TRUE,
+                    id);
+    return execute(sql);
 }
 
 std::vector<std::vector<std::string>>
@@ -167,7 +179,7 @@ Database::query(const std::string &sql) const{
 
     if(err != nullptr){
     //    logger.debug(std::to_string(err));
-      throw std::runtime_error(std::string(err));
+      throw std::runtime_error(sql + std::string(err));
     }
 
     return std::move (data.rows);
@@ -184,7 +196,7 @@ bool Database::execute(const std::string &sql) const{
 
     if(err != nullptr){
       //  logger.debug(std::to_string(err));
-      throw std::runtime_error(std::string(err));
+      throw std::runtime_error(sql + std::string(err));
       return false;
     }
 

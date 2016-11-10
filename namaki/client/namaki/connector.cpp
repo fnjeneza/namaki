@@ -69,6 +69,7 @@ Message Connector::Impl::incoming() const{
     Namaki::Message m;
     m.direction = Direction::IN;
     m.body = message.text().body();
+    m.contact_id = message.src();
     m.timestamp = static_cast<size_t>(message.timestamp());
 
     return m;

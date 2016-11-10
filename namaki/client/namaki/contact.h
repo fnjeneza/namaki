@@ -7,8 +7,8 @@
 namespace Namaki{
 struct Contact{
 public:
-    std::string id;
-    std::string name;
+    std::string id{};
+    std::string name{};
 
 };
 } //namespace

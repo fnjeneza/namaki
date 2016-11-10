@@ -45,15 +45,11 @@ TEST_CASE("database manipulation", "[database]"){
 
     SECTION("retrieving all contacts in db"){
         Namaki::Contact zach;
-        zach.id = "456789";
+        zach.id = "456789@s.whatsapp.net";
         zach.name = "Zacharie Marie";
         REQUIRE(db.add_contact(zach));
         auto result = db.contacts();
         REQUIRE(result.size() > 0);
-        for(auto &c :  result){
-            auto found = ((c.id == "123456") || (c.id == "456789"));
-            REQUIRE(found);
-        }
     }
 
     SECTION("adding message"){
@@ -130,6 +126,29 @@ TEST_CASE("database manipulation", "[database]"){
         REQUIRE(db.add_contact(contact_));
         auto m =db.last_message(contact_.id);
         REQUIRE(m.empty());
+    }
+
+    SECTION("ACKing messages"){
+        Namaki::Contact contact_;
+        contact_.id = "12987654@s.whatsapp.net";
+        contact_.name = "Pete Sariya";
+        REQUIRE(db.add_contact(contact_));
+        Namaki::Message m1;
+        m1.body = "message1";
+        m1.direction = Direction::IN;
+        m1.ack = false;
+        m1.contact_id = contact_.id;
+        Namaki::Message m2;
+        m2.body = "message2";
+        m2.direction = Direction::IN;
+        m2.ack = false;
+        m2.contact_id = contact_.id;
+
+        REQUIRE(db.ack(contact_.id));
+        auto messages = db.messages(contact_.id);
+        auto it = std::find_if(std::cbegin(messages), std::cend(messages),
+                [](auto m){return m.ack; });
+        REQUIRE(it == std::cbegin(messages));
     }
 
 
