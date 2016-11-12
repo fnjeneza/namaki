@@ -70,8 +70,36 @@ TEST_CASE("database manipulation", "[database]"){
         REQUIRE(db.add_message(m2));
     }
 
+    SECTION("adding message with special char"){
+        Namaki::Message m1;
+        m1.body = "hello' 'w'orld";
+        m1.direction = Direction::OUT;
+        m1.contact_id = "123456";
+        m1.timestamp=4578561;
+
+        REQUIRE(db.add_message(m1));
+    }
+
     SECTION("retrieving all messages"){
-        auto result = db.messages("123456");
+        Namaki::Contact c;
+        c.id = "123456@s.whatsapp.net";
+        c.name = "Jean Delatour";
+        REQUIRE(db.add_contact(c));
+
+        Namaki::Message m1;
+        m1.body = "hello world";
+        m1.direction = Direction::OUT;
+        m1.contact_id = c.id;
+        m1.timestamp=4578561;
+
+        Namaki::Message m2;
+        m2.body = "bonjour le monde";
+        m2.direction = Direction::OUT;
+        m2.contact_id = c.id;
+        m2.timestamp=4578561;
+        REQUIRE(db.add_message(m1));
+        REQUIRE(db.add_message(m2));
+        auto result = db.messages(c.id);
         REQUIRE(result.size() == 2);
     }
 
@@ -84,7 +112,7 @@ TEST_CASE("database manipulation", "[database]"){
 
         Namaki::Message m1;
         m1.body = "hello world";
-        m1.direction = Direction::OUT;
+        m1.direction = Direction::IN;
         m1.ack = false;
         m1.contact_id = turner.id;
         m1.timestamp=123654;

@@ -2,6 +2,7 @@
 
 #include <array>
 #include <string>
+#include <regex>
 
 #include <sqlite3.h>
 #include <fmt/format.h>
@@ -89,17 +90,26 @@ Namaki::Contact Database::contact(const std::string &id) const {
 bool Database::add_message(const Message &message) const{
     auto ack = (message.ack == false ? SQLITE_FALSE : SQLITE_TRUE);
     auto direction (message.direction == Direction::IN ? "IN": "OUT");
+
+    if(message.direction == Direction::OUT){
+        ack = true;
+    }
+
+
+    std::regex re("'|\"");
+    auto body = std::regex_replace(message.body, re, "\\$&");
+    auto contact_id = std::regex_replace(message.contact_id, re, "\\$&");
+
     std::string sql = fmt::format("INSERT INTO message(body, direction, ack, \
                       timestamp, contact_id ) \
-            VALUES('{}', '{}', {}, {}, '{}');",
-            message.body,
+            VALUES(\"{}\", '{}', {}, {}, \"{}\");",
+            body,
             direction,
             ack,
             message.timestamp,
-            message.contact_id);
+            contact_id);
     return execute(sql);
 }
-
 
 std::vector<Message> Database::messages(const std::string &contact_id) const {
     std::string sql = fmt::format("SELECT message.body, \
