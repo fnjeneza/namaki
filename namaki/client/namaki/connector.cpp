@@ -2,6 +2,7 @@
 #include <string>
 #include <zmq.hpp>
 #include <iostream>
+#include <fstream>
 #include "messages.h"
 #include "message.h"
 
@@ -22,6 +23,8 @@ private:
     std::unique_ptr<zmq::socket_t> m_receiver;
     std::pair<std::string, int> m_listen_addr; //addr to listen too
     std::pair<std::string, int> m_remote_addr; //addr to connect too
+
+    std::string save_media(const messages::MediaMessage &media) const;
 };
 
 Connector::Connector():pimpl{std::make_unique<Impl>()}{
@@ -67,10 +70,18 @@ Message Connector::Impl::incoming() const{
     message.ParseFromString(s_message);
 
     Namaki::Message m;
+    m.whatsapp_id = message.id();
     m.direction = Direction::IN;
     m.body = message.text().body();
     m.contact_id = message.src();
     m.timestamp = static_cast<size_t>(message.timestamp());
+    m.notify = message.notify();
+    m.author = message.author();
+
+    if(message.has_media()){
+        auto path = save_media(message.media());
+        m.media_path = path;
+    }
 
     return m;
 }
@@ -82,10 +93,21 @@ void Connector::Impl::outgoing(const Message &message) const{
     m.mutable_text()->set_body(message.body);
     auto out = m.SerializeAsString();
 
-
     auto size = out.size();
     zmq::message_t msg(size);
     memcpy(msg.data(), out.c_str(), size);
     m_sender->send(msg);
+}
+
+std::string Connector::Impl::save_media( const messages::MediaMessage &media)const{
+    auto file_name = std::to_string(std::time(nullptr))+"."+media.extension();
+
+    // write data
+    std::ofstream out(file_name, std::ios::binary);
+    auto size = static_cast<int>(media.data().size());
+    out.write(media.data().c_str(),size);
+
+    return file_name;
+
 }
 } //namespace

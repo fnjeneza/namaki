@@ -13,13 +13,15 @@ enum struct Direction{
 
 struct Message{
 
-    std::string id{};
     std::string whatsapp_id{};
     std::string body{};
     std::string contact_id{};
     size_t timestamp{static_cast<size_t>(std::time(nullptr))};
     bool ack{}; //true if message has been opened
     Direction direction{};
+    std::string media_path{};
+    std::string notify{};
+    std::string author{};
 
     std::pair<std::string, std::string>
     datetime() const noexcept;

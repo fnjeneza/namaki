@@ -14,10 +14,12 @@ set(src_dir ${CMAKE_CURRENT_SOURCE_DIR}/namaki)
 set(fmt_dir ${CMAKE_CURRENT_SOURCE_DIR}/3rd-party/fmt/)
 
 #protobuf source dir
-set(pb_dir "${CMAKE_SOURCE_DIR}/namaki")
+set(pb_dir "${CMAKE_SOURCE_DIR}/../protobuf")
+# generated files destination
+set(pb_dest "${CMAKE_SOURCE_DIR}/namaki")
 
 # generate protobuf messages header and implementation
-execute_process(COMMAND protoc -I=${pb_dir} --cpp_out=${pb_dir} ${pb_dir}/messages.proto)
+execute_process(COMMAND protoc -I=${pb_dir} --cpp_out=${pb_dest} ${pb_dir}/messages.proto)
 add_library(message_obj OBJECT ${src_dir}/messages.pb.cc)
 add_library(${lib_name} SHARED $<TARGET_OBJECTS:message_obj> ${src_dir}/connector.cpp)
 

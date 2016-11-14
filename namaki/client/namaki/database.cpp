@@ -37,9 +37,11 @@ void Database::connect(const std::string &db_name){
 }
 
 bool Database::add_contact(const Contact &contact) const{
-    std::string sql = fmt::format("INSERT INTO contact VALUES('{}', '{}');",
+    std::string sql = fmt::format("INSERT INTO contact(id, name, notify)\
+            VALUES('{}', '{}', '{}');",
             contact.id,
-            contact.name);
+            contact.name,
+            contact.notify);
     return execute(sql);
 }
 
@@ -99,21 +101,24 @@ bool Database::add_message(const Message &message) const{
     std::regex re("'|\"");
     auto body = std::regex_replace(message.body, re, "\\$&");
     auto contact_id = std::regex_replace(message.contact_id, re, "\\$&");
+    auto whatsapp_id = (message.whatsapp_id.empty()) ? "null" : message.whatsapp_id;
 
     std::string sql = fmt::format("INSERT INTO message(body, direction, ack, \
-                      timestamp, contact_id ) \
-            VALUES(\"{}\", '{}', {}, {}, \"{}\");",
+                      timestamp, contact_id, whatsapp_id, media_path) \
+            VALUES(\"{}\", '{}', {}, {}, \"{}\", '{}', '{}');",
             body,
             direction,
             ack,
             message.timestamp,
-            contact_id);
+            contact_id,
+            whatsapp_id,
+            message.media_path);
     return execute(sql);
 }
 
 std::vector<Message> Database::messages(const std::string &contact_id) const {
     std::string sql = fmt::format("SELECT message.body, \
-            timestamp, direction FROM message\
+            timestamp, direction, ack, media_path FROM message\
             WHERE message.contact_id = '{}'",
             contact_id);
     auto results = query(sql);
@@ -129,6 +134,8 @@ std::vector<Message> Database::messages(const std::string &contact_id) const {
         message.body = result[0];
         message.timestamp = stoul(result[1]);
         message.direction = (result[2] == "IN") ? Direction::IN : Direction::OUT;
+        message.ack = (stoul(result[3]) == SQLITE_TRUE) ? true : false;
+        message.media_path = result[4];
         message_list.push_back(std::move(message));
     }
 
