@@ -7,6 +7,8 @@ message TextMessage {
 
 message MediaMessage {
     bytes data = 1;
+    string caption = 2;
+    string extension=3;
 }
 
 message Message {
@@ -16,4 +18,7 @@ message Message {
     uint32 timestamp = 4;
     TextMessage text= 5;
     MediaMessage media= 6;
+    string author = 7;
+    string notify = 8;
+    repeated string participant = 9;
 }
