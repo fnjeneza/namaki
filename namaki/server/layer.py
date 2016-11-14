@@ -72,7 +72,7 @@ class NamakiLayer(YowInterfaceLayer):
 
             ext = mime_type.split('/')[-1]
             message.media.extension = ext;
-            message.media.caption = messageProtocolEntity.getCaption()
+            message.text.body = messageProtocolEntity.getCaption()
 
         # push to the broker
         self.push(message.SerializeToString())
