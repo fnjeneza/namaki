@@ -49,16 +49,33 @@ class NamakiLayer(YowInterfaceLayer):
                 "read",
                 messageProtocolEntity.getParticipant())
 
+        timestamp = messageProtocolEntity.getTimestamp()
+        participant = messageProtocolEntity.getParticipant()
+
+        message = Message()
+        message.id = messageProtocolEntity.getId()
+        message.src = messageProtocolEntity.getFrom()
+        message.timestamp = timestamp
+        message.author = messageProtocolEntity.getAuthor()
+        message.notify = messageProtocolEntity.getNotify()
+
+        if participant:
+            message.participant = participant
+
         if messageProtocolEntity.getType() == "text":
-            print(messageProtocolEntity)
-
-            message = Message()
-            message.id = messageProtocolEntity.getId()
-            message.src = messageProtocolEntity.getFrom()
             message.text.body = messageProtocolEntity.getBody()
-            message.timestamp = messageProtocolEntity.getTimestamp()
-            self.push(message.SerializeToString())
 
+        elif messageProtocolEntity.getType() == "media":
+            #media_type = messageProtocolEntity.getMediaType();
+            mime_type = messageProtocolEntity.getMimeType();
+            message.media.data = messageProtocolEntity.getMediaContent()
+
+            ext = mime_type.split('/')[-1]
+            message.media.extension = ext;
+            message.media.caption = messageProtocolEntity.getCaption()
+
+        # push to the broker
+        self.push(message.SerializeToString())
         #send ack
         self.toLower(receipt)
 
@@ -68,7 +85,7 @@ class NamakiLayer(YowInterfaceLayer):
         """
         called when ack is sent by a friend
         """
-        print("message sent")
+        print("ack message sent")
 
 
     @ProtocolEntityCallback("failure")
@@ -90,10 +107,7 @@ class NamakiLayer(YowInterfaceLayer):
         phone = msg.dest
         body = msg.text.body
 
-        if not self.has_jid(phone):
-            phone = self.phone_to_jid(phone)
-
-        print("message to be sent to whatsapp number %s", phone)
+        print("message to be sent %s to whatsapp number %s" % (message,phone))
 
         out = TextMessageProtocolEntity(body.encode(),
                 to = phone)
