@@ -51,7 +51,8 @@ bool Database::remove_contact(const std::string &id) const {
 }
 
 std::vector<Contact> Database::contacts() const {
-    std::string sql("SELECT contact.id, contact.name FROM contact");
+    std::string sql("SELECT contact.id, contact.name,\
+            contact.notify FROM contact");
     auto results = query(sql);
 
     std::vector<Contact> contact_list;
@@ -64,6 +65,7 @@ std::vector<Contact> Database::contacts() const {
         Contact contact;
         contact.id = result[0];
         contact.name = result[1];
+        contact.notify = result[2];
         contact_list.push_back(std::move(contact));
     }
 
