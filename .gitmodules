@@ -1,10 +1,10 @@
-[submodule "namaki/client/3rd-party/Catch"]
-	path = namaki/client/3rd-party/Catch
-	url = https://github.com/philsquared/Catch.git
-[submodule "namaki/client/3rd-party/fmt"]
-	path = namaki/client/3rd-party/fmt
-	url = https://github.com/fmtlib/fmt.git
-	branch = release-3.0
 [submodule "3rd-party/yowsup"]
 	path = 3rd-party/yowsup
 	url = https://github.com/fnjeneza/yowsup.git
+[submodule "3rd-party/Catch"]
+	path = 3rd-party/Catch
+	url = https://github.com/philsquared/Catch.git
+[submodule "3rd-party/fmt"]
+	path = 3rd-party/fmt
+	url = https://github.com/fmtlib/fmt.git
+	branch = release-3.0
