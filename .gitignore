@@ -1,12 +1,13 @@
 config.yml
 config
-yowsup
 build
 compile_commands.json
 messages.pb.*
 bin/
 include/
 lib/
+lib64
+pyvenv.cfg
 pip-selfcheck.json
 share/
 __pycache__/

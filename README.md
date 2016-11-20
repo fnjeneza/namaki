@@ -11,12 +11,12 @@ Those packages are required to build namaki library
     * zmq
     * protocol buffer
     * sqlite3
-    * virtualenv
+    * python3-venv
 
 On ubuntu you can install them with:
 ```
     $ apt install build-essential cmake ninja-build libzmqpp-dev \
-    libsqlite3-dev virtualenv
+    libsqlite3-dev python3-venv
 ```
 
 For protobuf we use version 3.0.2 (libprotoc 3.0.2)
@@ -26,12 +26,13 @@ A script can be found [here](./install-protobuf.sh)
 
 Python environment
 ------------------
-Run the script setup-env.sh to initialize a virtual environment for the proxy
+Run the script setup-proxy-dependencies.py to initialize a virtual environment for the proxy
 The script will install all dependecies for the proxy.
 
 Proxy dependecies are:
     * zmq
     * yaml
+    * yowsup
 
 Build
 -----
