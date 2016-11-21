@@ -8,31 +8,35 @@ if(CCACHE_FOUND)
     set_property(GLOBAL PROPERTY RULE_LAUNCH_LINK ccache)
 endif(CCACHE_FOUND)
 
-# name of the executable
-set(lib_name "namakiclient")
-set(src_dir ${CMAKE_CURRENT_SOURCE_DIR}/namaki)
-set(fmt_dir ${CMAKE_CURRENT_SOURCE_DIR}/3rd-party/fmt/)
-
+set(${CMAKE_RUNTIME_OUTPUT_DIRECTORY} ${CMAKE_BINARY_DIR})
+include_directories(SYSTEM
+    ${CMAKE_CURRENT_SOURCE_DIR}/3rd-party/fmt
+    ${CMAKE_CURRENT_SOURCE_DIR}/3rd-party/Catch/include
+)
+set(src ${CMAKE_SOURCE_DIR}/src)
 #protobuf source dir
-set(pb_dir "${CMAKE_SOURCE_DIR}/../protobuf")
+set(pb_dir "${CMAKE_SOURCE_DIR}/protobuf")
 # generated files destination
-set(pb_dest "${CMAKE_SOURCE_DIR}/namaki")
+set(pb_dest ${src})
 
 # generate protobuf messages header and implementation
 execute_process(COMMAND protoc -I=${pb_dir} --cpp_out=${pb_dest} ${pb_dir}/messages.proto)
-add_library(message_obj OBJECT ${src_dir}/messages.pb.cc)
-add_library(${lib_name} SHARED $<TARGET_OBJECTS:message_obj> ${src_dir}/connector.cpp)
 
-target_include_directories(${lib_name} PUBLIC namaki)
-target_include_directories(${lib_name} SYSTEM PUBLIC ${fmt_dir})
+# name of the executable
+set(lib_name "namaki")
+
+add_library(message_obj OBJECT ${src}/messages.pb.cc)
+add_library(${lib_name} SHARED $<TARGET_OBJECTS:message_obj> ${src}/connector.cpp)
+
 
 target_sources(${lib_name} PUBLIC
-    ${src_dir}/database.cpp
-    ${src_dir}/message.cpp
+    ${src}/database.cpp
+    ${src}/message.cpp
 )
+
 target_compile_options(
     ${lib_name} PUBLIC
-    "-fPIC;-Wall;-Wpedantic;-Wextra;-fdiagnostics-color=always"
+    "-Wall;-Wpedantic;-Wextra;-fdiagnostics-color=always"
     "-Winline;-Wshadow;-Wuseless-cast;-Wsign-conversion;-Wctor-dtor-privacy"
     "-Wmissing-include-dirs;-Wduplicated-cond;-Wfloat-equal;-Wlogical-op"
     "-Wmissing-declarations;-Wsuggest-override;-Wconversion;-Wredundant-decls"
@@ -63,5 +67,4 @@ target_link_libraries(${lib_name} PUBLIC
     ${PROTOBUF_LIB}
     ${SQLITE3_LIB}
 )
-
 add_subdirectory(tests)
