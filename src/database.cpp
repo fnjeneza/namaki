@@ -25,6 +25,7 @@ Database::Database(){
 Database::~Database(){
     sqlite3_close(m_db);
 }
+
 void Database::connect(const std::string &db_name){
     auto status = sqlite3_open(db_name.c_str(), &m_db);
 
