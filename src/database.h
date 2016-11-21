@@ -14,6 +14,8 @@ class Database{
 public:
     Database();
     ~Database();
+    Database(const Database &) = delete;
+    Database & operator=(const Database) = delete;
 
     void connect(const std::string &db_name="namaki.db");
     bool add_contact(const Contact &contact) const;
