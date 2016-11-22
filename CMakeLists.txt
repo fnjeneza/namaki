@@ -23,8 +23,10 @@ set(pb_dir "${CMAKE_SOURCE_DIR}/protobuf")
 set(pb_dest ${src})
 
 # generate protobuf messages header and implementation
-execute_process(COMMAND protoc -I=${pb_dir} --cpp_out=${pb_dest} ${pb_dir}/messages.proto)
-execute_process(COMMAND protoc -I=${pb_dir} --python_out=${pb_dest}/proxy ${pb_dir}/messages.proto)
+execute_process(
+    COMMAND protoc -I=${pb_dir} --cpp_out=${pb_dest} ${pb_dir}/messages.proto
+    COMMAND protoc -I=${pb_dir} --python_out=${pb_dest}/proxy ${pb_dir}/messages.proto
+)
 
 # name of the executable
 set(lib_name "namaki")
@@ -36,7 +38,7 @@ add_library(${lib_name} SHARED $<TARGET_OBJECTS:message_obj> ${src}/connector.cp
 target_sources(${lib_name} PUBLIC
     ${src}/database.cpp
     ${src}/message.cpp
-    ${src}/proxy.cpp
+    ${src}/proxy/proxy.cpp
 )
 
 target_compile_options(
@@ -74,4 +76,17 @@ target_link_libraries(${lib_name} PUBLIC
 )
 add_subdirectory(tests)
 
-file(COPY ${src}/proxy DESTINATION ${CMAKE_BINARY_DIR})
+file(COPY ${src}/proxy/ DESTINATION
+    ${CMAKE_BINARY_DIR}/proxy/lib/python3.5/site-packages/namaki)
+
+install(TARGETS ${lib_name}
+    LIBRARY DESTINATION lib
+    ARCHIVE DESTINATION lib
+)
+install(DIRECTORY ${CMAKE_BINARY_DIR}/proxy
+    DESTINATION lib
+)
+install(DIRECTORY ${src}/ DESTINATION include/namaki
+    FILES_MATCHING PATTERN "*.h"
+)
+install(FILES db.sql DESTINATION sql)
